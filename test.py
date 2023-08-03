@@ -104,7 +104,6 @@ class Test:
         assert r22 == '22 Heather Fowler h.fowler@randatmail.com 835-5062-15'
         assert r33 == '33 Rebecca Smith r.smith@randatmail.com 627-1702-52'
 
-    @pytest.mark.latest
     def test_DataTableDownload(self):
         driver.get('https://www.lambdatest.com/selenium-playground/table-data-download-demo')
         driver.find_element(by.XPATH, '//*[@id="example_wrapper"]/div[1]/a[2]').click()
@@ -114,3 +113,43 @@ class Test:
         os.path.exists('C:\\Users\\1chud\\Downloads\\Selenium Grid Online  Run Selenium Test On Cloud.csv')
         os.path.exists('C:\\Users\\1chud\\Downloads\\Selenium Grid Online  Run Selenium Test On Cloud.xlsx')
 
+    def test_MouseHover(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/hover-demo')
+        ActionChains(driver).move_to_element(driver.find_element(by.XPATH,
+                                                                 '//*[@id="__next"]/section[3]/div/div/div/div/div/div/div/div[1]/div[1]')).perform()
+        time.sleep(1)
+        ActionChains(driver).move_to_element(driver.find_element(by.XPATH,
+                                                                 '//*[@id="__next"]/section[3]/div/div/div/div/div/div/div/div[1]/div[2]')).perform()
+        time.sleep(1)
+        ActionChains(driver).move_to_element(driver.find_element(by.XPATH,
+                                                                 '//*[@id="__next"]/section[3]/div/div/div/div/div/div/div/div[2]/div[1]')).perform()
+        time.sleep(1)
+        ActionChains(driver).move_to_element(driver.find_element(by.XPATH,
+                                                                 '//*[@id="__next"]/section[3]/div/div/div/div/div/div/div/div[2]/div[2]')).perform()
+        time.sleep(1)
+
+        ActionChains(driver).move_to_element(driver.find_element(by.XPATH,
+                                                                 '//*[@id="__next"]/section[3]/div/div/div/div/div/div/div/div[3]/img')).perform()
+        assert driver.find_element(by.XPATH,
+                                   '//*[@id="__next"]/section[3]/div/div/div/div/div/div/div/div[3]/p').is_displayed() == True
+        time.sleep(1)
+        # zoom
+
+    def test_Redirection(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/redirection')
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/p/a').click()
+        assert driver.current_url == 'https://www.lambdatest.com/selenium-playground/'
+
+    @pytest.mark.latest
+    def test_CheckboxDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/checkbox-demo')
+        driver.find_element(by.ID, 'isAgeSelected').click()
+        driver.find_element(by.XPATH,'//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div[2]/div[1]/input').click()
+        driver.find_element(by.XPATH,'//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div[2]/div[2]/input').click()
+        driver.find_element(by.XPATH,'//*[@id="box"]').click()
+
+        assert driver.find_element(by.ID,'txtAge').text == 'Checked'
+        assert driver.find_element(by.XPATH,'//*[@id="ex1-check1"]').is_selected() == True
+        assert driver.find_element(by.XPATH,'//*[@id="ex1-check2"]').is_selected() == True
+        assert driver.find_element(by.XPATH,'//*[@id="ex1-check3"]').is_selected() == True
+        driver.quit()

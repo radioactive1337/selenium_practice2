@@ -140,16 +140,29 @@ class Test:
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/p/a').click()
         assert driver.current_url == 'https://www.lambdatest.com/selenium-playground/'
 
-    @pytest.mark.latest
     def test_CheckboxDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/checkbox-demo')
         driver.find_element(by.ID, 'isAgeSelected').click()
-        driver.find_element(by.XPATH,'//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div[2]/div[1]/input').click()
-        driver.find_element(by.XPATH,'//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div[2]/div[2]/input').click()
-        driver.find_element(by.XPATH,'//*[@id="box"]').click()
+        driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div[2]/div[1]/input').click()
+        driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div[2]/div[2]/input').click()
+        driver.find_element(by.XPATH, '//*[@id="box"]').click()
 
-        assert driver.find_element(by.ID,'txtAge').text == 'Checked'
-        assert driver.find_element(by.XPATH,'//*[@id="ex1-check1"]').is_selected() == True
-        assert driver.find_element(by.XPATH,'//*[@id="ex1-check2"]').is_selected() == True
-        assert driver.find_element(by.XPATH,'//*[@id="ex1-check3"]').is_selected() == True
+        assert driver.find_element(by.ID, 'txtAge').text == 'Checked'
+        assert driver.find_element(by.XPATH, '//*[@id="ex1-check1"]').is_selected() == True
+        assert driver.find_element(by.XPATH, '//*[@id="ex1-check2"]').is_selected() == True
+        assert driver.find_element(by.XPATH, '//*[@id="ex1-check3"]').is_selected() == True
+
+    def test_FormSubmitDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/ajax-form-submit-demo')
+        driver.find_element(by.ID, 'title').send_keys('nickname')
+        driver.find_element(by.ID, 'description').send_keys('Hello world!')
+        driver.find_element(by.ID, 'btn-submit').click()
+        assert driver.find_element(by.ID, 'submit-control').text == 'Ajax Request is Processing!'
+
+    @pytest.mark.latest
+    def test_DownloadFileDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/download-file-demo')
+        driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div/a/button').click()
+        time.sleep(2)
+        assert os.path.exists('C:\\Users\\1chud\\Downloads\\LambdaTest.pdf') == True
         driver.quit()

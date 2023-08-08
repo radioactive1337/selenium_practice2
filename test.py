@@ -4,6 +4,7 @@ import pytest
 import random
 from selenium import webdriver
 from selenium.webdriver import ActionChains, Keys
+from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -159,10 +160,53 @@ class Test:
         driver.find_element(by.ID, 'btn-submit').click()
         assert driver.find_element(by.ID, 'submit-control').text == 'Ajax Request is Processing!'
 
-    @pytest.mark.latest
     def test_DownloadFileDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/download-file-demo')
         driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div/a/button').click()
         time.sleep(2)
         assert os.path.exists('C:\\Users\\1chud\\Downloads\\LambdaTest.pdf') == True
+
+    def test_BootstrapAlertMessages(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-alert-messages-demo')
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[1]').click()
+        assert ('Autocloseable success message. Hide in 5 seconds.' in driver.find_element(by.XPATH,
+                                                                                           '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
+        WebDriverWait(driver, 10).until_not(
+            ec.visibility_of_element_located((by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]')))
+
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[2]').click()
+        assert ('Normal success message. To close use the close button.' in driver.find_element(by.XPATH,
+                                                                                                '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]/a').click()
+
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[3]').click()
+        assert ('Autocloseable info message. Hide in 5 seconds.' in driver.find_element(by.XPATH,
+                                                                                        '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
+        WebDriverWait(driver, 10).until_not(
+            ec.visibility_of_element_located((by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]')))
+
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[4]').click()
+        assert ('Normal info message.To close use the close button.' in driver.find_element(by.XPATH,
+                                                                                            '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]/a').click()
+
+    @pytest.mark.latest
+    def test_JavascriptAlertBoxDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/javascript-alert-box-demo')
+        driver.find_element(by.XPATH,'//*[@id="__next"]/section[3]/div/div/div/div[1]/p/button').click()
+        alert = Alert(driver)
+        assert alert.text == 'Alert box!'
+        alert.accept()
+
+        driver.find_element(by.XPATH,'//*[@id="__next"]/section[3]/div/div/div/div[2]/div/p[1]/button').click()
+        confirm = Alert(driver)
+        assert confirm.text == 'Press a button!'
+        confirm.accept()
+        # prompt.dismiss()
+
+        driver.find_element(by.XPATH,'//*[@id="__next"]/section[3]/div/div/div/div[3]/p[1]/button').click()
+        prompt = Alert(driver)
+        prompt.send_keys('Hello')
+        prompt.accept()
+        assert driver.find_element(by.ID,'prompt-demo').text == "You have entered 'Hello' !"
         driver.quit()

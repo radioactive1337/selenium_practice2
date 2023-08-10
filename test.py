@@ -190,23 +190,57 @@ class Test:
                                                                                             '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]/a').click()
 
-    @pytest.mark.latest
     def test_JavascriptAlertBoxDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/javascript-alert-box-demo')
-        driver.find_element(by.XPATH,'//*[@id="__next"]/section[3]/div/div/div/div[1]/p/button').click()
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div[1]/p/button').click()
         alert = Alert(driver)
         assert alert.text == 'Alert box!'
         alert.accept()
 
-        driver.find_element(by.XPATH,'//*[@id="__next"]/section[3]/div/div/div/div[2]/div/p[1]/button').click()
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div[2]/div/p[1]/button').click()
         confirm = Alert(driver)
         assert confirm.text == 'Press a button!'
         confirm.accept()
         # prompt.dismiss()
 
-        driver.find_element(by.XPATH,'//*[@id="__next"]/section[3]/div/div/div/div[3]/p[1]/button').click()
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div[3]/p[1]/button').click()
         prompt = Alert(driver)
         prompt.send_keys('Hello')
         prompt.accept()
-        assert driver.find_element(by.ID,'prompt-demo').text == "You have entered 'Hello' !"
+        assert driver.find_element(by.ID, 'prompt-demo').text == "You have entered 'Hello' !"
+
+    def test_BootstrapDualListDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-dual-list-box-demo')
+        driver.find_elements(by.NAME, 'SearchDualList')[0].send_keys('cli')
+        driver.find_elements(by.NAME, 'SearchDualList')[0].clear()
+        driver.find_elements(by.NAME, 'SearchDualList')[0].send_keys(' ')
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[1]/div/ul/li[1]').click()
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[2]/button[2]').click()
+        driver.find_elements(by.NAME, 'SearchDualList')[1].send_keys('yc ')
+        driver.find_elements(by.NAME, 'SearchDualList')[1].clear()
+        driver.find_elements(by.NAME, 'SearchDualList')[1].send_keys(' ')
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[3]/div/ul/li[2]').click()
+        driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[2]/button[1]').click()
+        time.sleep(1)
+        left_col = driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[1]/div/ul')
+        left_col_rows = left_col.find_elements(by.XPATH, './li')
+        right_col = driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[3]/div/ul')
+        right_col_rows = right_col.find_elements(by.XPATH, './li')
+        assert len(right_col_rows) == 2
+        assert len(left_col_rows) == 4
+
+    @pytest.mark.latest
+    def test_TableSearchfilter(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/table-search-filter-demo')
+        driver.find_element(by.ID, 'task-table-filter').send_keys('completed')
+        td1 = driver.find_elements(by.XPATH, "//table[@id='task-table']//tr//td[contains(text(), 'completed')]")
+        assert len(td1) == 3
+
+        driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div[1]/button').click()
+        driver.find_element(by.XPATH,
+                            '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div[2]/table/thead/tr/th[4]/input').send_keys(
+            'John')
+        td2 = driver.find_elements(by.XPATH,
+                                   '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div[2]/table//tr//td[contains(text(), "John")]')
+        assert len(td2) == 2
         driver.quit()

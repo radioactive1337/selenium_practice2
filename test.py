@@ -2,12 +2,17 @@ import time
 import os.path
 import pytest
 import random
+
+import requests
 from selenium import webdriver
+from selenium.common import TimeoutException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 driver = webdriver.Chrome()
 
@@ -229,7 +234,6 @@ class Test:
         assert len(right_col_rows) == 2
         assert len(left_col_rows) == 4
 
-    @pytest.mark.latest
     def test_TableSearchfilter(self):
         driver.get('https://www.lambdatest.com/selenium-playground/table-search-filter-demo')
         driver.find_element(by.ID, 'task-table-filter').send_keys('completed')
@@ -243,4 +247,52 @@ class Test:
         td2 = driver.find_elements(by.XPATH,
                                    '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div[2]/table//tr//td[contains(text(), "John")]')
         assert len(td2) == 2
+
+    def test_BrokenImages(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/broken-image')
+        img_div = driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div')
+        images = img_div.find_elements(by.TAG_NAME, 'img')
+        k = 0
+        for img in images:
+            src = img.get_attribute('src')
+            r = requests.get(src)
+            if r != 200:
+                k += 1
+        print(f'{k} broken images')
+
+    def test_GeolocationTesting(self):
+        # driver.get('https://www.lambdatest.com/selenium-playground/geolocation-testing')
+        pass
+
+    def test_RadiobuttonDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/radiobutton-demo')
+        driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div[1]/div/label[1]/input').click()
+        driver.find_element(by.XPATH, '//*[@id="buttoncheck"]').click()
+        assert ('Male' in driver.find_element(by.XPATH,
+                                              '//*[@id="__next"]/div/section[2]/div/div/div/div[1]/div/p[2]').text) == True
+
+        driver.find_element(by.XPATH,
+                            '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div/div/div[2]/label/input').click()
+        assert driver.find_element(by.XPATH,
+                                   '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div/div/div[2]/label/input').is_selected() == True
+
+        driver.find_elements(by.XPATH, "//input[@name='gender']")[2].click()
+        driver.find_elements(by.XPATH, "//input[@name='ageGroup']")[0].click()
+        driver.find_element(by.XPATH, '//button[contains(text(),"Get values")]').click()
+        assert ('Other' in driver.find_element(by.XPATH, '//p[@class="mb-20 font-medium"]').text) == True
+        assert ('0 - 5' in driver.find_element(by.XPATH, '//p[@class="font-medium"]').text) == True
+
+    @pytest.mark.latest
+    def test_JqueryDropdownSearchDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/jquery-dropdown-search-demo')
+        driver.find_elements(by.XPATH, '//span[@class="selection"]')[0].click()
+        driver.find_element(by.XPATH,'//li[contains(text(),"United States")]').click()
+        driver.find_elements(by.XPATH, '//span[@class="selection"]')[1].click()
+        driver.find_element(by.XPATH,'//li[contains(text(),"Hawaii")]').click()
+        driver.find_elements(by.XPATH, '//span[@class="selection"]')[1].click()
+        driver.find_element(by.XPATH,'//li[contains(text(),"California")]').click()
+        driver.find_elements(by.XPATH, '//span[@class="selection"]')[2].click()
+        driver.find_element(by.XPATH,'//li[contains(text(),"Virgin Islands")]').click()
+        driver.find_element(by.XPATH,'//select[@name="files"]').click()
+        driver.find_element(by.XPATH, '//option[contains(text(),"Python")]').click()
         driver.quit()

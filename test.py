@@ -5,7 +5,6 @@ import random
 
 import requests
 from selenium import webdriver
-from selenium.common import TimeoutException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By as by
@@ -60,15 +59,15 @@ class Test:
                      'rangeDanger']
         output_val = []
 
-        for id in input_ids:
-            output_val.append(driver.find_element(by.ID, f'{id}').text)
+        for idx in input_ids:
+            output_val.append(driver.find_element(by.ID, f'{idx}').text)
 
         for i in range(0, 8):
             for j in range(5):
                 driver.find_elements(by.XPATH, '//input[@type="range"]')[i].send_keys(Keys.RIGHT)
 
-        for idx, id in enumerate(input_ids):
-            assert int(driver.find_element(by.ID, f'{id}').text) == int(output_val[idx]) + 5
+        for idx, idx in enumerate(input_ids):
+            assert int(driver.find_element(by.ID, f'{idx}').text) == int(output_val[idx]) + 5
 
     def test_BootstrapProgressBarDialogDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-progress-bar-dialog-demo')
@@ -280,7 +279,6 @@ class Test:
         assert ('Other' in driver.find_element(by.XPATH, '//p[@class="mb-20 font-medium"]').text) == True
         assert ('0 - 5' in driver.find_element(by.XPATH, '//p[@class="font-medium"]').text) == True
 
-    @pytest.mark.latest
     def test_JqueryDropdownSearchDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/jquery-dropdown-search-demo')
         driver.find_elements(by.XPATH, '//span[@class="selection"]')[0].click()
@@ -293,4 +291,34 @@ class Test:
         driver.find_element(by.XPATH, '//li[contains(text(),"Virgin Islands")]').click()
         driver.find_element(by.XPATH, '//select[@name="files"]').click()
         driver.find_element(by.XPATH, '//option[contains(text(),"Python")]').click()
+
+
+    def test_JqueryDownloadProgressBarDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/jquery-download-progress-bar-demo')
+        driver.find_element(by.XPATH, '//button[@id="downloadButton"]').click()
+        WebDriverWait(driver, 10).until(
+            ec.text_to_be_present_in_element((by.XPATH, '//div[@class="progress-label"]'), 'Complete!'))
+        driver.find_element(by.XPATH, '//button[contains(text(),"Close")]')
+        assert (driver.find_element(by.XPATH, '//div[@role="dialog"]').get_attribute('display') == 'none') == False
+
+    @pytest.mark.latest
+    def test_BootstrapModal(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-modal-demo')
+        # Single Modal
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == False
+        driver.find_elements(by.XPATH,'//button[contains(text(),"Launch Modal")]')[0].click()
+        assert driver.find_elements(by.XPATH,'//div[@class="modal-dialog"]')[0].is_displayed() == True
+        driver.find_element(by.XPATH, '//button[contains(text(),"Save Changes")]').click()
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == False
+        # Multiple Modal
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[1].is_displayed() == False
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[2].is_displayed() == False
+        driver.find_elements(by.XPATH, '//button[contains(text(),"Launch Modal")]')[1].click()
+        driver.find_elements(by.XPATH, '//button[contains(text(),"Launch Modal")]')[2].click()
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[1].is_displayed() == True
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[2].is_displayed() == True
+        driver.find_elements(by.XPATH, '//button[contains(text(),"Save Changes")]')[2].click()
+        driver.find_elements(by.XPATH, '//button[contains(text(),"Save Changes")]')[1].click()
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[1].is_displayed() == False
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[2].is_displayed() == False
         driver.quit()

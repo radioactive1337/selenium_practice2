@@ -10,8 +10,13 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.chrome.options import Options
 
+
+chrome_options = Options()
+chrome_options.add_argument('--headless')
 driver = webdriver.Chrome()
+# driver = webdriver.Chrome(options=chrome_options)
 
 
 @pytest.mark.all
@@ -66,8 +71,9 @@ class Test:
             for j in range(5):
                 driver.find_elements(by.XPATH, '//input[@type="range"]')[i].send_keys(Keys.RIGHT)
 
-        for idx, idx in enumerate(input_ids):
-            assert int(driver.find_element(by.ID, f'{idx}').text) == int(output_val[idx]) + 5
+        for ids, idx in enumerate(input_ids):
+            assert int(driver.find_element(by.ID, f'{idx}').text) == int(output_val[ids]) + 5
+        time.sleep(3)
 
     def test_BootstrapProgressBarDialogDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-progress-bar-dialog-demo')
@@ -80,7 +86,6 @@ class Test:
         assert driver.find_element(by.XPATH,
                                    '//section[@class="mt-50"]//h2').text == "waitingDialog.show('Hello Alert !!!');"
 
-    @pytest.mark.selected
     def test_JQueryDatePickerDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/jquery-date-picker-demo')
         driver.find_element(by.XPATH, '//input[@id="from"]').click()
@@ -292,7 +297,6 @@ class Test:
         driver.find_element(by.XPATH, '//select[@name="files"]').click()
         driver.find_element(by.XPATH, '//option[contains(text(),"Python")]').click()
 
-
     def test_JqueryDownloadProgressBarDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/jquery-download-progress-bar-demo')
         driver.find_element(by.XPATH, '//button[@id="downloadButton"]').click()
@@ -301,13 +305,12 @@ class Test:
         driver.find_element(by.XPATH, '//button[contains(text(),"Close")]')
         assert (driver.find_element(by.XPATH, '//div[@role="dialog"]').get_attribute('display') == 'none') == False
 
-    @pytest.mark.latest
     def test_BootstrapModal(self):
         driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-modal-demo')
         # Single Modal
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == False
-        driver.find_elements(by.XPATH,'//button[contains(text(),"Launch Modal")]')[0].click()
-        assert driver.find_elements(by.XPATH,'//div[@class="modal-dialog"]')[0].is_displayed() == True
+        driver.find_elements(by.XPATH, '//button[contains(text(),"Launch Modal")]')[0].click()
+        assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == True
         driver.find_element(by.XPATH, '//button[contains(text(),"Save Changes")]').click()
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == False
         # Multiple Modal
@@ -321,4 +324,12 @@ class Test:
         driver.find_elements(by.XPATH, '//button[contains(text(),"Save Changes")]')[1].click()
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[1].is_displayed() == False
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[2].is_displayed() == False
-        driver.quit()
+
+    def test_FileDownloadDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/generate-file-to-download-demo')
+        driver.find_element(by.XPATH, '//textarea[@id="textbox"]').send_keys('some text!:)')
+        driver.find_element(by.XPATH, '//button[@id="create"]').click()
+        driver.find_element(by.XPATH, '//a[@id="link-to-download"]').click()
+        time.sleep(1)
+        assert os.path.exists('C:\\Users\\1chud\\Downloads\\Lambdainfo.txt') == True
+

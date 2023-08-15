@@ -65,13 +65,16 @@ class Test:
                      'rangeDanger']
         output_val = []
 
+        # get slider values
         for idx in input_ids:
             output_val.append(driver.find_element(by.ID, f'{idx}').text)
 
+        # move sliders
         for i in range(0, 8):
             for j in range(5):
                 driver.find_elements(by.XPATH, '//input[@type="range"]')[i].send_keys(Keys.RIGHT)
 
+        # assertion
         for ids, idx in enumerate(input_ids):
             assert int(driver.find_element(by.ID, f'{idx}').text) == int(output_val[ids]) + 5
         time.sleep(3)
@@ -89,10 +92,13 @@ class Test:
 
     def test_JQueryDatePickerDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/jquery-date-picker-demo')
+        # from
         driver.find_element(by.XPATH, '//input[@id="from"]').click()
         driver.find_element(by.XPATH, "//select[@class='ui-datepicker-month']//option[1]").click()
         driver.find_element(by.XPATH, '//*[@id="ui-datepicker-div"]/table/tbody/tr[1]/td[1]/a').click()
         time.sleep(1)
+
+        # to
         driver.find_element(by.XPATH, '//input[@id="to"]').click()
         driver.find_element(by.XPATH, '//select[@class="ui-datepicker-month"]//option[12]').click()
         driver.find_element(by.XPATH, '//*[@id="ui-datepicker-div"]/table/tbody/tr[6]/td[1]/a').click()
@@ -141,7 +147,7 @@ class Test:
         assert driver.find_element(by.XPATH,
                                    '//*[@id="__next"]/section[3]/div/div/div/div/div/div/div/div[3]/p').is_displayed() == True
         time.sleep(1)
-        # zoom
+        # zoom ---
 
     def test_Redirection(self):
         driver.get('https://www.lambdatest.com/selenium-playground/redirection')
@@ -175,23 +181,28 @@ class Test:
 
     def test_BootstrapAlertMessages(self):
         driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-alert-messages-demo')
+
+        # first button
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[1]').click()
         assert ('Autocloseable success message. Hide in 5 seconds.' in driver.find_element(by.XPATH,
                                                                                            '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
         WebDriverWait(driver, 10).until_not(
             ec.visibility_of_element_located((by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]')))
 
+        # second button
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[2]').click()
         assert ('Normal success message. To close use the close button.' in driver.find_element(by.XPATH,
                                                                                                 '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]/a').click()
 
+        # third button
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[3]').click()
         assert ('Autocloseable info message. Hide in 5 seconds.' in driver.find_element(by.XPATH,
                                                                                         '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
         WebDriverWait(driver, 10).until_not(
             ec.visibility_of_element_located((by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]')))
 
+        # fourth button
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div[1]/button[4]').click()
         assert ('Normal info message.To close use the close button.' in driver.find_element(by.XPATH,
                                                                                             '//*[@id="__next"]/section[3]/div/div/div/div/div[2]/div[1]').text) == True
@@ -199,17 +210,20 @@ class Test:
 
     def test_JavascriptAlertBoxDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/javascript-alert-box-demo')
+
+        # JS Alert
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div[1]/p/button').click()
         alert = Alert(driver)
         assert alert.text == 'Alert box!'
         alert.accept()
 
+        # Confirm box
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div[2]/div/p[1]/button').click()
         confirm = Alert(driver)
         assert confirm.text == 'Press a button!'
-        confirm.accept()
-        # prompt.dismiss()
+        confirm.dismiss()
 
+        # Prompt box
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div[3]/p[1]/button').click()
         prompt = Alert(driver)
         prompt.send_keys('Hello')
@@ -218,30 +232,38 @@ class Test:
 
     def test_BootstrapDualListDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-dual-list-box-demo')
+
+        # work w/ first list
         driver.find_elements(by.NAME, 'SearchDualList')[0].send_keys('cli')
         driver.find_elements(by.NAME, 'SearchDualList')[0].clear()
         driver.find_elements(by.NAME, 'SearchDualList')[0].send_keys(' ')
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[1]/div/ul/li[1]').click()
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[2]/button[2]').click()
+
+        # work w/ second list
         driver.find_elements(by.NAME, 'SearchDualList')[1].send_keys('yc ')
         driver.find_elements(by.NAME, 'SearchDualList')[1].clear()
         driver.find_elements(by.NAME, 'SearchDualList')[1].send_keys(' ')
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[3]/div/ul/li[2]').click()
         driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[2]/button[1]').click()
         time.sleep(1)
-        left_col = driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[1]/div/ul')
-        left_col_rows = left_col.find_elements(by.XPATH, './li')
-        right_col = driver.find_element(by.XPATH, '//*[@id="__next"]/section[3]/div/div/div/div/div/div[3]/div/ul')
-        right_col_rows = right_col.find_elements(by.XPATH, './li')
+
+        # assertion
+        left_col_rows = driver.find_elements(by.XPATH,
+                                             '//*[@id="__next"]/section[3]/div/div/div/div/div/div[1]/div/ul/li')
+        right_col_rows = driver.find_elements(by.XPATH,
+                                              '//*[@id="__next"]/section[3]/div/div/div/div/div/div[3]/div/ul/li')
         assert len(right_col_rows) == 2
         assert len(left_col_rows) == 4
 
     def test_TableSearchfilter(self):
         driver.get('https://www.lambdatest.com/selenium-playground/table-search-filter-demo')
+        # filter = 'completed' (first table)
         driver.find_element(by.ID, 'task-table-filter').send_keys('completed')
         td1 = driver.find_elements(by.XPATH, "//table[@id='task-table']//tr//td[contains(text(), 'completed')]")
         assert len(td1) == 3
 
+        # filter = 'John' (second table)
         driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div[1]/button').click()
         driver.find_element(by.XPATH,
                             '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div[2]/table/thead/tr/th[4]/input').send_keys(
@@ -269,16 +291,20 @@ class Test:
 
     def test_RadiobuttonDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/radiobutton-demo')
+
+        # Click on button to get the selected value.
         driver.find_element(by.XPATH, '//*[@id="__next"]/div/section[2]/div/div/div/div[1]/div/label[1]/input').click()
         driver.find_element(by.XPATH, '//*[@id="buttoncheck"]').click()
         assert ('Male' in driver.find_element(by.XPATH,
                                               '//*[@id="__next"]/div/section[2]/div/div/div/div[1]/div/p[2]').text) == True
 
+        # Disabled Checkbox
         driver.find_element(by.XPATH,
                             '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div/div/div[2]/label/input').click()
         assert driver.find_element(by.XPATH,
                                    '//*[@id="__next"]/div/section[2]/div/div/div/div[2]/div/div/div/div[2]/label/input').is_selected() == True
 
+        # Click on button to get the selected values from Gender and Age
         driver.find_elements(by.XPATH, "//input[@name='gender']")[2].click()
         driver.find_elements(by.XPATH, "//input[@name='ageGroup']")[0].click()
         driver.find_element(by.XPATH, '//button[contains(text(),"Get values")]').click()
@@ -287,14 +313,22 @@ class Test:
 
     def test_JqueryDropdownSearchDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/jquery-dropdown-search-demo')
+
+        # Drop Down with Search
         driver.find_elements(by.XPATH, '//span[@class="selection"]')[0].click()
         driver.find_element(by.XPATH, '//li[contains(text(),"United States")]').click()
+
+        # Select Multiple Values with search
         driver.find_elements(by.XPATH, '//span[@class="selection"]')[1].click()
         driver.find_element(by.XPATH, '//li[contains(text(),"Hawaii")]').click()
         driver.find_elements(by.XPATH, '//span[@class="selection"]')[1].click()
         driver.find_element(by.XPATH, '//li[contains(text(),"California")]').click()
+
+        # Drop Down with Disabled values
         driver.find_elements(by.XPATH, '//span[@class="selection"]')[2].click()
         driver.find_element(by.XPATH, '//li[contains(text(),"Virgin Islands")]').click()
+
+        # Drop-down with Category related options
         driver.find_element(by.XPATH, '//select[@name="files"]').click()
         driver.find_element(by.XPATH, '//option[contains(text(),"Python")]').click()
 
@@ -308,12 +342,14 @@ class Test:
 
     def test_BootstrapModal(self):
         driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-modal-demo')
+
         # Single Modal
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == False
         driver.find_elements(by.XPATH, '//button[contains(text(),"Launch Modal")]')[0].click()
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == True
         driver.find_element(by.XPATH, '//button[contains(text(),"Save Changes")]').click()
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[0].is_displayed() == False
+
         # Multiple Modal
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[1].is_displayed() == False
         assert driver.find_elements(by.XPATH, '//div[@class="modal-dialog"]')[2].is_displayed() == False
@@ -338,6 +374,8 @@ class Test:
         driver.get('https://www.lambdatest.com/selenium-playground/jquery-dual-list-box-demo')
         names = ['Andrea', 'Newbry', 'West', 'Gibbs', 'Una', 'Liam', 'Talisman', 'Brooks', 'McDonald', 'Hamilton',
                  'Portland', 'Wakeman', 'Zak', 'Tackett', 'Tebbit']
+
+        # add all
         driver.find_element(by.XPATH, '//button[contains(text(),"Add All")]').click()
         select2 = driver.find_element(by.XPATH, '//select[contains(@class,"pickListResult")]')
         options2 = select2.find_elements(by.XPATH, './option')
@@ -348,6 +386,7 @@ class Test:
                 actual_names_count += 1
         assert expected_names_count == actual_names_count
 
+        # remove 'Talisman'
         opt1 = driver.find_element(by.XPATH, '//option[contains(text(),"Talisman")]')
         opt1.click()
         driver.find_element(by.XPATH, '//button[contains(text(),"Remove")]').click()

@@ -12,10 +12,11 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.chrome.options import Options
 
-
 chrome_options = Options()
 chrome_options.add_argument('--headless')
 driver = webdriver.Chrome()
+
+
 # driver = webdriver.Chrome(options=chrome_options)
 
 
@@ -333,3 +334,71 @@ class Test:
         time.sleep(1)
         assert os.path.exists('C:\\Users\\1chud\\Downloads\\Lambdainfo.txt') == True
 
+    def test_JQueryDualListBox(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/jquery-dual-list-box-demo')
+        names = ['Andrea', 'Newbry', 'West', 'Gibbs', 'Una', 'Liam', 'Talisman', 'Brooks', 'McDonald', 'Hamilton',
+                 'Portland', 'Wakeman', 'Zak', 'Tackett', 'Tebbit']
+        driver.find_element(by.XPATH, '//button[contains(text(),"Add All")]').click()
+        select2 = driver.find_element(by.XPATH, '//select[contains(@class,"pickListResult")]')
+        options2 = select2.find_elements(by.XPATH, './option')
+        actual_names_count = 0
+        expected_names_count = len(names)
+        for option in options2:
+            if option.text in names:
+                actual_names_count += 1
+        assert expected_names_count == actual_names_count
+
+        opt1 = driver.find_element(by.XPATH, '//option[contains(text(),"Talisman")]')
+        opt1.click()
+        driver.find_element(by.XPATH, '//button[contains(text(),"Remove")]').click()
+        select1 = driver.find_element(by.XPATH, '//select[contains(@class,"pickData")]')
+        options1 = select1.find_elements(by.XPATH, './option')
+        actual_names_count = 0
+        for option in options1:
+            if option.text in 'Talisman':
+                actual_names_count += 1
+        assert actual_names_count == 1
+
+    @pytest.mark.latest
+    def test_TableilterDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/table-records-filter-demo')
+        # HyperExecute rows
+        driver.find_element(by.XPATH, '//button[@data-target="pagado"]').click()
+        actual_rows = 0
+        expected_rows = len(
+            driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr[@data-status="pagado"]'))
+        for row in driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr'):
+            if 'HyperExecute' in row.text:
+                actual_rows += 1
+        assert actual_rows == expected_rows
+
+        # Selenium Testing rows
+        driver.find_element(by.XPATH, '//button[@data-target="pendiente"]').click()
+        actual_rows = 0
+        expected_rows = len(
+            driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr[@data-status="pendiente"]'))
+        for row in driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr'):
+            if 'Selenium Testing' in row.text:
+                actual_rows += 1
+        assert actual_rows == expected_rows
+
+        # Cypress Testing rows
+        driver.find_element(by.XPATH, '//button[@data-target="cancelado"]').click()
+        actual_rows = 0
+        expected_rows = len(
+            driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr[@data-status="cancelado"]'))
+        for row in driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr'):
+            if 'Cypress Testing' in row.text:
+                actual_rows += 1
+        assert actual_rows == expected_rows
+
+        # All rows
+        driver.find_element(by.XPATH, '//button[@data-target="all"]').click()
+        actual_rows = 0
+        expected_rows = len(
+            driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr[@data-status="all"]'))
+        for row in driver.find_elements(by.XPATH, '//table[@class="table table-filter"]/tbody/tr'):
+            if 'Cypress Testing' in row.text or 'Cypress Testing' in row.text or 'Selenium Testing' in row.text or 'HyperExecute' in row.text:
+                actual_rows += 1
+        assert actual_rows == expected_rows
+        driver.quit()

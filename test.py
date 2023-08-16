@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By as by
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.select import Select
 
 chrome_options = Options()
 chrome_options.add_argument('--headless')
@@ -92,6 +93,7 @@ class Test:
 
     def test_JQueryDatePickerDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/jquery-date-picker-demo')
+
         # from
         driver.find_element(by.XPATH, '//input[@id="from"]').click()
         driver.find_element(by.XPATH, "//select[@class='ui-datepicker-month']//option[1]").click()
@@ -127,6 +129,7 @@ class Test:
         os.path.exists('C:\\Users\\1chud\\Downloads\\Selenium Grid Online  Run Selenium Test On Cloud.csv')
         os.path.exists('C:\\Users\\1chud\\Downloads\\Selenium Grid Online  Run Selenium Test On Cloud.xlsx')
 
+    @pytest.mark.skip
     def test_MouseHover(self):
         driver.get('https://www.lambdatest.com/selenium-playground/hover-demo')
         ActionChains(driver).move_to_element(driver.find_element(by.XPATH,
@@ -258,6 +261,7 @@ class Test:
 
     def test_TableSearchfilter(self):
         driver.get('https://www.lambdatest.com/selenium-playground/table-search-filter-demo')
+
         # filter = 'completed' (first table)
         driver.find_element(by.ID, 'task-table-filter').send_keys('completed')
         td1 = driver.find_elements(by.XPATH, "//table[@id='task-table']//tr//td[contains(text(), 'completed')]")
@@ -398,7 +402,6 @@ class Test:
                 actual_names_count += 1
         assert actual_names_count == 1
 
-    @pytest.mark.latest
     def test_TableilterDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/table-records-filter-demo')
         # HyperExecute rows
@@ -440,4 +443,58 @@ class Test:
             if 'Cypress Testing' in row.text or 'Cypress Testing' in row.text or 'Selenium Testing' in row.text or 'HyperExecute' in row.text:
                 actual_rows += 1
         assert actual_rows == expected_rows
+
+    @pytest.mark.skip
+    def test_DragandDropDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/drag-and-drop-demo')
+
+        # Drag and Drop (Demo 1) ---
+        item1 = driver.find_element(by.XPATH, '//span[contains(text(),"Draggable 1")]')
+        item2 = driver.find_element(by.XPATH, '//span[contains(text(),"Draggable 2")]')
+        drop_area1 = driver.find_element(by.XPATH, '//div[@id="mydropzone"]')
+        ActionChains(driver).click_and_hold(item1).move_to_element(drop_area1).release().perform()
+
+        # Drag and Drop (Demo 2)
+        item3 = driver.find_element(by.XPATH, '//p[contains(text(),"Drag me to my target")]')
+        drop_area2 = driver.find_element(by.XPATH, '//div[@id="droppable"]')
+        ActionChains(driver).drag_and_drop(item3, drop_area2).perform()
+
+    @pytest.mark.skip
+    def test_ContextMenus(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/context-menu')
+        a = driver.find_element(by.XPATH, '//div[@id="hot-spot"]')
+        ActionChains(driver).context_click(a).perform()
+        Alert(driver).accept()
+
+    def test_DropdownDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/select-dropdown-demo')
+
+        # Select Option
+        s1 = Select(driver.find_element(by.XPATH, '//select[@id="select-demo"]'))
+        s1.select_by_value('Friday')
+        assert driver.find_element(by.XPATH,
+                                   '//p[@class="selected-value text-size-14"]').text == 'Day selected :- Friday'
+
+        # Multi Select Option
+        s2 = Select(driver.find_element(by.XPATH, '//select[@id="multi-select"]'))
+        s2.select_by_value('California')
+        driver.find_element(by.XPATH, '//button[@id="printMe"]').click()
+        s2.select_by_value('Ohio')
+        driver.find_element(by.XPATH, '//button[@id="printAll"]').click()
+        assert ('California' in driver.find_element(by.XPATH,
+                                                    '//p[contains(text(),"First selected option is : ")]').text) == True
+        assert ('Ohio' in driver.find_element(by.XPATH,
+                                              '//p[contains(text(),"Last selected option is :  ")]').text) == True
+
+    @pytest.mark.latest
+    def test_KeyPress(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/key-press')
+        driver.find_element(by.XPATH, '//input[@id="my_field"]').send_keys('e')
+        assert ('e' in driver.find_element(by.XPATH, '//p[@id="result"]').text) == True
+        driver.find_element(by.XPATH, '//input[@id="my_field"]').send_keys('2')
+        assert ('2' in driver.find_element(by.XPATH, '//p[@id="result"]').text) == True
+        driver.find_element(by.XPATH, '//input[@id="my_field"]').send_keys(Keys.SHIFT)
+        assert ('SHIFT' in driver.find_element(by.XPATH, '//p[@id="result"]').text) == True
+        driver.find_element(by.XPATH, '//input[@id="my_field"]').send_keys(' ')
+        assert ('SPACE' in driver.find_element(by.XPATH, '//p[@id="result"]').text) == True
         driver.quit()

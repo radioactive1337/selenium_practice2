@@ -486,7 +486,6 @@ class Test:
         assert ('Ohio' in driver.find_element(by.XPATH,
                                               '//p[contains(text(),"Last selected option is :  ")]').text) == True
 
-    @pytest.mark.latest
     def test_KeyPress(self):
         driver.get('https://www.lambdatest.com/selenium-playground/key-press')
         driver.find_element(by.XPATH, '//input[@id="my_field"]').send_keys('e')
@@ -497,4 +496,58 @@ class Test:
         assert ('SHIFT' in driver.find_element(by.XPATH, '//p[@id="result"]').text) == True
         driver.find_element(by.XPATH, '//input[@id="my_field"]').send_keys(' ')
         assert ('SPACE' in driver.find_element(by.XPATH, '//p[@id="result"]').text) == True
+
+    def test_BootstrapDownloadProgressDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-download-progress-demo')
+        driver.find_element(by.XPATH, '//button[@id="dwnBtn"]').click()
+        WebDriverWait(driver, 10).until(ec.text_to_be_present_in_element((by.XPATH, '//p[@class="counter"]'), '100%'))
+        assert driver.find_element(by.XPATH, '//p[@class="success text-green-100 mb-10"]').text == 'Download completed!'
+
+    @pytest.mark.latest
+    def test_WindowpopupModal(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/window-popup-modal-demo')
+
+        # Single Window popup Modal
+        driver.find_element(by.XPATH, '//a[contains(text(),"  Follow On Twitter ")]').click()
+        driver.switch_to.window(driver.window_handles[1])
+        assert ('twitter' in driver.current_url) == True
+        driver.close()
+
+        driver.switch_to.window(driver.window_handles[0])
+        driver.find_element(by.XPATH, '//a[contains(text(),"  Like us On Facebook ")]').click()
+        driver.switch_to.window(driver.window_handles[1])
+        assert ('facebook' in driver.current_url) == True
+        driver.close()
+
+        driver.switch_to.window(driver.window_handles[0])
+        driver.find_element(by.XPATH, '//a[contains(text(),"  Follow us On Linkedin ")]').click()
+        driver.switch_to.window(driver.window_handles[1])
+        assert ('linkedin' in driver.current_url) == True
+        driver.close()
+
+        # Multiple Windows popup Modal
+        driver.switch_to.window(driver.window_handles[0])
+        driver.find_element(by.XPATH, '//a[@id="followboth"]').click()
+        driver.switch_to.window(driver.window_handles[2])
+        assert (('twitter' in driver.current_url) or ('facebook' in driver.current_url)) == True
+        driver.close()
+        driver.switch_to.window(driver.window_handles[1])
+        assert (('twitter' in driver.current_url) or ('facebook' in driver.current_url)) == True
+        driver.close()
+
+        driver.switch_to.window(driver.window_handles[0])
+        driver.find_element(by.XPATH, '//a[@id="followall"]').click()
+        driver.switch_to.window(driver.window_handles[3])
+        assert (('twitter' in driver.current_url) or ('facebook' in driver.current_url) or (
+                'lambdatest' in driver.current_url)) == True
+        driver.close()
+        driver.switch_to.window(driver.window_handles[2])
+        assert (('twitter' in driver.current_url) or ('facebook' in driver.current_url) or (
+                'lambdatest' in driver.current_url)) == True
+        driver.close()
+        driver.switch_to.window(driver.window_handles[1])
+        assert (('twitter' in driver.current_url) or ('facebook' in driver.current_url) or (
+                'lambdatest' in driver.current_url)) == True
+        driver.close()
+
         driver.quit()

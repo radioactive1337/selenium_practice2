@@ -503,7 +503,6 @@ class Test:
         WebDriverWait(driver, 10).until(ec.text_to_be_present_in_element((by.XPATH, '//p[@class="counter"]'), '100%'))
         assert driver.find_element(by.XPATH, '//p[@class="success text-green-100 mb-10"]').text == 'Download completed!'
 
-    @pytest.mark.latest
     def test_WindowpopupModal(self):
         driver.get('https://www.lambdatest.com/selenium-playground/window-popup-modal-demo')
 
@@ -550,4 +549,30 @@ class Test:
                 'lambdatest' in driver.current_url)) == True
         driver.close()
 
+    def test_BootstrapDatePickersDemo(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-date-picker-demo')
+
+        # Select Date
+        driver.find_element(by.XPATH, '//input[@type="date"]').send_keys('7121989')
+        assert driver.find_element(by.XPATH, '//input[@type="date"]').get_attribute('value') == '1989-12-07'
+
+        # Select Date Range
+        driver.find_element(by.XPATH, '//input[@placeholder="Start date"]').send_keys('20/02/2020')
+        driver.find_element(by.XPATH, '//input[@placeholder="End date"]').send_keys('22/02/2022')
+
+        assert driver.find_element(by.XPATH, '//input[@placeholder="Start date"]').get_attribute(
+            'value') == '20/02/2020'
+        assert driver.find_element(by.XPATH, '//input[@placeholder="End date"]').get_attribute(
+            'value') == '22/02/2022'
+
+    @pytest.mark.latest
+    def test_DataListFilter(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/data-list-filter-demo')
+        driver.find_element(by.XPATH, '//input[@type="search"]').send_keys('tester')
+        assert driver.find_element(by.XPATH,
+                                   '//div[@style!="display: none;"]//p[@class="text-gray-900 font-semibold mb-10"]').text == 'Title: Tester'
+        driver.find_element(by.XPATH, '//input[@type="search"]').clear()
+        driver.find_element(by.XPATH, '//input[@type="search"]').send_keys('developer')
+        assert driver.find_element(by.XPATH,
+                                   '//div[@style!="display: none;"]//p[@class="text-gray-900 font-semibold mb-10"]').text == 'Title: Developer'
         driver.quit()

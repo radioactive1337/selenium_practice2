@@ -15,14 +15,13 @@ from selenium.webdriver.support.select import Select
 
 chrome_options = Options()
 chrome_options.add_argument('--headless')
-driver = webdriver.Chrome()
+# driver = webdriver.Chrome()
 
-
-# driver = webdriver.Chrome(options=chrome_options)
+driver = webdriver.Chrome(options=chrome_options)
 
 
 @pytest.mark.all
-class Test:
+class Test():
     def test_SimpleFormDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/simple-form-demo')
         driver.find_element(by.ID, 'user-message').send_keys('qwe')
@@ -129,7 +128,6 @@ class Test:
         os.path.exists('C:\\Users\\1chud\\Downloads\\Selenium Grid Online  Run Selenium Test On Cloud.csv')
         os.path.exists('C:\\Users\\1chud\\Downloads\\Selenium Grid Online  Run Selenium Test On Cloud.xlsx')
 
-    @pytest.mark.skip
     def test_MouseHover(self):
         driver.get('https://www.lambdatest.com/selenium-playground/hover-demo')
         ActionChains(driver).move_to_element(driver.find_element(by.XPATH,
@@ -402,7 +400,8 @@ class Test:
                 actual_names_count += 1
         assert actual_names_count == 1
 
-    def test_TableilterDemo(self):
+    @pytest.mark.selected
+    def test_TablefilterDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/table-records-filter-demo')
         # HyperExecute rows
         driver.find_element(by.XPATH, '//button[@data-target="pagado"]').click()
@@ -547,7 +546,6 @@ class Test:
         driver.switch_to.window(driver.window_handles[1])
         assert (('twitter' in driver.current_url) or ('facebook' in driver.current_url) or (
                 'lambdatest' in driver.current_url)) == True
-        driver.close()
 
     def test_BootstrapDatePickersDemo(self):
         driver.get('https://www.lambdatest.com/selenium-playground/bootstrap-date-picker-demo')

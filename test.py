@@ -565,7 +565,6 @@ class Test:
         assert driver.find_element(by.XPATH, '//input[@placeholder="End date"]').get_attribute(
             'value') == '22/02/2022'
 
-    @pytest.mark.latest
     def test_DataListFilter(self):
         driver.get('https://www.lambdatest.com/selenium-playground/data-list-filter-demo')
         driver.find_element(by.XPATH, '//input[@type="search"]').send_keys('tester')
@@ -575,4 +574,59 @@ class Test:
         driver.find_element(by.XPATH, '//input[@type="search"]').send_keys('developer')
         assert driver.find_element(by.XPATH,
                                    '//div[@style!="display: none;"]//p[@class="text-gray-900 font-semibold mb-10"]').text == 'Title: Developer'
+
+    def test_TableSortingAndSearching(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/table-sort-search-demo')
+
+        # col 1
+        assert driver.find_element(by.XPATH, '//thead/tr/th[1]').get_attribute(
+            'aria-label') == 'Name: activate to sort column descending'
+        assert driver.find_element(by.XPATH, '//tbody/tr[1]/td[1]').text == 'A. Bennett'
+
+        # col 2
+        driver.find_element(by.XPATH, '//thead/tr/th[2]').click()
+        assert driver.find_element(by.XPATH, '//thead/tr/th[2]').get_attribute(
+            'aria-label') == 'Position: activate to sort column descending'
+        assert driver.find_element(by.XPATH, '//tbody/tr[1]/td[2]').text == 'Accountant'
+
+        # col 3
+        driver.find_element(by.XPATH, '//thead/tr/th[3]').click()
+        assert driver.find_element(by.XPATH, '//thead/tr/th[3]').get_attribute(
+            'aria-label') == 'Office: activate to sort column descending'
+        assert driver.find_element(by.XPATH, '//tbody/tr[1]/td[3]').text == 'Belgium'
+
+        # col 4
+        driver.find_element(by.XPATH, '//thead/tr/th[4]').click()
+        assert driver.find_element(by.XPATH, '//thead/tr/th[4]').get_attribute(
+            'aria-label') == 'Age: activate to sort column descending'
+        assert driver.find_element(by.XPATH, '//tbody/tr[1]/td[4]').text == '17'
+
+    def test_DynamicDataLoading(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/dynamic-data-loading-demo')
+        driver.find_element(by.XPATH, '//button[@id="save"]').click()
+        WebDriverWait(driver, 10).until_not(
+            ec.text_to_be_present_in_element((by.XPATH, '//div[@id="loading"]'), 'loading...'))
+        k = 0
+        if driver.find_element(by.XPATH, '//div[@id="loading"]').find_element(by.TAG_NAME, 'img'):
+            k = 1
+        assert k == 1
+        assert ('First Name : ' in driver.find_element(by.XPATH, '//div[@id="loading"]').text) == True
+        assert ('Last Name : ' in driver.find_element(by.XPATH, '//div[@id="loading"]').text) == True
+
+    @pytest.mark.latest
+    def test_StatusCodes(self):
+        driver.get('https://www.lambdatest.com/selenium-playground/status-code')
+
+        # selenium
+        code = driver.execute_script("""
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', window.location.href, false);
+            xhr.send(null);
+            return xhr.status;
+        """)
+        assert code == 200
+
+        # requests
+        code = requests.get('https://www.lambdatest.com/selenium-playground/status-code').status_code
+        assert code == 200
         driver.quit()
